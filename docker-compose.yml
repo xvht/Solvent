@@ -1,0 +1,9 @@
+services:
+  main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: FollowingAPI
+    ports:
+      - "45211:3001"
+    restart: unless-stopped
