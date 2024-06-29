@@ -1,4 +1,4 @@
-# FollwingAPI
+# FollowingAPI
 
 This is a simple proxy API that allows you to fetch the followers of a given Roblox user.
 
