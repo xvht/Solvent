@@ -12,7 +12,7 @@ To use this API, you need to send a GET request to the following endpoint:
 https://following.kty.lol/{userId}
 ```
 
-Where `{userId}` is the ID of the user you want to fetch the last 100 followers of in ascending order.
+Where `{userId}` is the ID of the user you want to fetch the last 100 followers of the user in ascending order.
 
 This will return a JSON object with the following structure:
 
