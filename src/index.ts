@@ -19,7 +19,7 @@ app.get("/:id", async (c) => {
     }
 
     const request = await fetch(
-      `https://friends.roblox.com/v1/users/${id}/followings?sortOrder=Asc`
+      `https://friends.roblox.com/v1/users/${id}/followings?sortOrder=Asc&limit=100`
     );
     return c.json({ success: true, data: await request.json() });
   } catch (error) {
