@@ -1,73 +1,78 @@
-# FollowingAPI
+# Following API
 
-This is a simple proxy API that allows you to fetch the followers of a given Roblox user.
+Simple API to fetch Roblox user following/follower information
 
-It is built using [Hono](https://hono.dev/) and Roblox's API.
+## Endpoints
 
-## Usage
+### GET /:id/following
 
-To use this API, you need to send a GET request to the following endpoint:
+Get users that the specified user follows (100 per page)
 
-```
-https://following.kty.lol/{userId}
-```
-
-Where `{userId}` is the ID of the user you want to fetch the last 100 followers of the user in ascending order.
-
-This will return a JSON object with the following structure:
+Response:
 
 ```json
 {
   "success": true,
   "data": {
-    "previousPageCursor": null,
-    "nextPageCursor": null,
-    "data": [
-      {
-        "isDeleted": false,
-        "friendFrequentScore": 0,
-        "friendFrequentRank": 201,
-        "hasVerifiedBadge": false,
-        "description": null,
-        "created": "0001-01-01T05:51:00Z",
-        "isBanned": false,
-        "externalAppDisplayName": null,
-        "id": 1234567890,
-        "name": "user1",
-        "displayName": "User One"
-      },
-      {
-        "isDeleted": false,
-        "friendFrequentScore": 0,
-        "friendFrequentRank": 201,
-        "hasVerifiedBadge": false,
-        "description": null,
-        "created": "0001-01-01T05:51:00Z",
-        "isBanned": false,
-        "externalAppDisplayName": null,
-        "id": 0987654321,
-        "name": "user2",
-        "displayName": "User Two"
-      }
-    ]
+    "data": [...],
+    "nextPageCursor": "string"
   }
 }
 ```
 
-If no user ID is passed, the API will return a 400 Bad Request error.
+### GET /:id/following/count
+
+Get total count of users being followed
+
+Response:
+
+```json
+{
+  "success": true,
+  "totalFollowing": 123
+}
+```
+
+### GET /:id/followers
+
+Get users following the specified user (100 per page)
+
+Response:
+
+```json
+{
+  "success": true,
+  "data": {
+    "data": [...],
+    "nextPageCursor": "string"
+  }
+}
+```
+
+### GET /:id/followers/count
+
+Get total follower count
+
+Response:
+
+```json
+{
+  "success": true,
+  "totalFollowers": 123
+}
+```
+
+### Error Response
 
 ```json
 {
   "success": false,
-  "error": "No user ID provided"
+  "error": "string"
 }
 ```
 
-If a malformed user ID is passed, the API will return a 400 Bad Request error.
+### Status Codes
 
-```json
-{
-  "success": false,
-  "error": "Invalid user ID"
-}
-```
+- `200`: Successful request
+- `400`: "No user ID provided" or "Invalid user ID"
+- `500`: "An error occurred while fetching the data"
