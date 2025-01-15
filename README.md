@@ -4,6 +4,35 @@ Simple API to fetch Roblox user following/follower information
 
 ## Endpoints
 
+### GET /:id/friends
+
+Get friends of the specified user (100 per page)
+
+Response:
+
+```json
+{
+  "success": true,
+  "data": {
+    "data": [...],
+    "nextPageCursor": "string"
+  }
+}
+```
+
+### GET /:id/friends/count
+
+Get total friend count
+
+Response:
+
+```json
+{
+  "success": true,
+  "totalFriends": 123
+}
+```
+
 ### GET /:id/following
 
 Get users that the specified user follows (100 per page)
