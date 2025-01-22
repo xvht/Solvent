@@ -14,7 +14,7 @@
   "scripts": {
     "start": "bun src/index.ts",
     "dev": "bun run --hot src/index.ts",
-    "bundle": "bun build src/index.ts --bundle --outfile=bundle.js",
+    "bundle": "bun build src/index.ts --minify --outfile=bundle.js",
     "deploy": "wrangler deploy"
   }
 }
