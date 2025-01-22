@@ -199,4 +199,9 @@ app.get("/:id/followers/count", async (c) => {
   }
 });
 
+app.get("*", (c) => {
+  c.status(404);
+  return c.json(badRequestResponse("Invalid endpoint"));
+});
+
 export default app;
