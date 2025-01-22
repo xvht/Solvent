@@ -1,0 +1,22 @@
+name = "solvent-api"
+compatibility_date = "2024-11-11"
+main = "dist/index.js"
+
+[build]
+command = "bun build ./src/index.ts --outfile=dist/index.js --bundle"
+watch_dir = "src"
+
+[vars]
+ENVIRONMENT = "development"
+
+[[routes]]
+pattern = "solvent.xvh.lol"
+custom_domain = true
+
+[env.development]
+name = "solvent-api-dev"
+vars = { ENVIRONMENT = "development" }
+
+[env.production]
+name = "solvent-api-prod"
+vars = { ENVIRONMENT = "production" }
