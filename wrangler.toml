@@ -7,7 +7,7 @@ command = "bun build ./src/index.ts --outfile=dist/index.js --minify"
 watch_dir = "src"
 
 [vars]
-ENVIRONMENT = "development"
+ENVIRONMENT = "production"
 
 [[routes]]
 pattern = "solvent.xvh.lol"
