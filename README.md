@@ -1,107 +1,118 @@
-# Following API
+# **Solvent**
 
-Simple API to fetch Roblox user following/follower information
+API to fetch Roblox user relationship information (friends, followers, following)
 
-## Endpoints
+## **Endpoints**
 
-### GET /:id/friends
+### **GET /**
 
-Get friends of the specified user (100 per page)
-
-Response:
-
-```json
-{
-  "success": true,
-  "data": {
-    "data": [...],
-    "nextPageCursor": "string"
-  }
-}
-```
-
-### GET /:id/friends/count
-
-Get total friend count
-
-Response:
-
-```json
-{
-  "success": true,
-  "totalFriends": 123
-}
-```
-
-### GET /:id/following
-
-Get users that the specified user follows (100 per page)
-
-Response:
-
-```json
-{
-  "success": true,
-  "data": {
-    "data": [...],
-    "nextPageCursor": "string"
-  }
-}
-```
-
-### GET /:id/following/count
-
-Get total count of users being followed
-
-Response:
-
-```json
-{
-  "success": true,
-  "totalFollowing": 123
-}
-```
-
-### GET /:id/followers
-
-Get users following the specified user (100 per page)
-
-Response:
-
-```json
-{
-  "success": true,
-  "data": {
-    "data": [...],
-    "nextPageCursor": "string"
-  }
-}
-```
-
-### GET /:id/followers/count
-
-Get total follower count
-
-Response:
-
-```json
-{
-  "success": true,
-  "totalFollowers": 123
-}
-```
-
-### Error Response
+Returns an error if no user ID is provided
 
 ```json
 {
   "success": false,
-  "error": "string"
+  "error": "No user ID provided"
 }
 ```
 
-### Status Codes
+### **GET /:id/friends**
 
-- `200`: Successful request
-- `400`: "No user ID provided" or "Invalid user ID"
-- `500`: "An error occurred while fetching the data"
+Get all friends of the specified user
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": [...]
+}
+```
+
+### **GET /:id/friends/count**
+
+Get total friend count
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": 123
+}
+```
+
+### **GET /:id/following**
+
+Get all users that the specified user follows
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": [...]
+}
+```
+
+### **GET /:id/following/count**
+
+Get total count of users being followed
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": 123
+}
+```
+
+### **GET /:id/followers**
+
+Get users following the specified user
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": [...]
+}
+```
+
+### **GET /:id/followers/count**
+
+Get total follower count
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": 123
+}
+```
+
+### **Error Responses**
+
+#### Bad Request (400)
+
+```json
+{
+  "error": true,
+  "code": 400,
+  "data": "Invalid user ID"
+}
+```
+
+#### Server Error (500)
+
+```json
+{
+  "error": true,
+  "code": 500,
+  "data": "An error occurred while fetching the data"
+}
+```
+
+## **Notes**
+
+> [!NOTE]
+>
+> - All endpoints that fetch lists of users handle pagination automatically (100 items per page)
+> - The API internally concatenates all pages to return complete results
+> - User ID must be a valid number
