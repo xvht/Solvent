@@ -9,8 +9,7 @@ const app = new Hono();
 
 app.get("/", (c) => {
   c.status(400);
-  c.header("Content-Type", "application/json");
-  return c.json({ success: false, error: "No user ID provided" });
+  return c.json(badRequestResponse("No user ID provided"));
 });
 
 app.get("/:id/friends", async (c) => {

@@ -16,8 +16,9 @@ Returns an error if no user ID is provided
 
 ```json
 {
-  "success": false,
-  "error": "No user ID provided"
+  "error": true,
+  "code": 400,
+  "data": "No user ID provided"
 }
 ```
 
