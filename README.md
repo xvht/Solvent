@@ -2,6 +2,12 @@
 
 API to fetch Roblox user relationship information (friends, followers, following)
 
+> [!NOTE]
+>
+> - All endpoints that fetch lists of users handle pagination automatically (100 items per page)
+> - The API internally concatenates all pages to return complete results
+> - User ID must be a valid number
+
 ## **Endpoints**
 
 ### **GET /**
@@ -108,11 +114,3 @@ Get total follower count
   "data": "An error occurred while fetching the data"
 }
 ```
-
-## **Notes**
-
-> [!NOTE]
->
-> - All endpoints that fetch lists of users handle pagination automatically (100 items per page)
-> - The API internally concatenates all pages to return complete results
-> - User ID must be a valid number
