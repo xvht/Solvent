@@ -94,6 +94,18 @@ Get total follower count
 }
 ```
 
+### **GET /:id/discord**
+
+Get the Discord username of the specified user
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": "discord_username_here"
+}
+```
+
 ### **Error Responses**
 
 #### Bad Request (400)

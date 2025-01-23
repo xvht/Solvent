@@ -7,6 +7,8 @@ import {
 
 const app = new Hono();
 
+const ROPRO_API_URL = "https://api.ropro.io/getUserInfoTest.php";
+
 app.get("/", (c) => {
   c.status(400);
   return c.json(badRequestResponse("No user ID provided"));
@@ -160,6 +162,27 @@ app.get("/:id/followers/count", async (c) => {
     ).then((res) => res.json());
 
     return c.json(successResponse(data.count));
+  } catch (error) {
+    c.status(500);
+    return c.json(
+      serverErrorResponse("An error occurred while fetching the data.")
+    );
+  }
+});
+
+app.get("/:id/discord", async (c) => {
+  try {
+    const id = Number(c.req.param("id"));
+    if (!id || isNaN(id)) {
+      c.status(400);
+      return c.json(badRequestResponse("Invalid user ID"));
+    }
+
+    const data = await fetch(`${ROPRO_API_URL}?userid=${id}`).then((res) =>
+      res.json()
+    );
+
+    return c.json(successResponse(data.discord));
   } catch (error) {
     c.status(500);
     return c.json(
