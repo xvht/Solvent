@@ -51,21 +51,11 @@ app.get("/:id/friends/count", async (c) => {
       return c.json(badRequestResponse("Invalid user ID"));
     }
 
-    let nextPageCursor = "";
-    let friendsCount = 0;
+    const data = await fetch(
+      `https://friends.roblox.com/v1/users/${id}/friends/count`
+    ).then((res) => res.json());
 
-    do {
-      const cursorParam = nextPageCursor ? `&cursor=${nextPageCursor}` : "";
-      const request = await fetch(
-        `https://friends.roblox.com/v1/users/${id}/friends?sortOrder=Asc&limit=100${cursorParam}`
-      );
-      const data = await request.json();
-
-      friendsCount += data.data.length;
-      nextPageCursor = data.nextPageCursor;
-    } while (nextPageCursor);
-
-    return c.json(successResponse(friendsCount));
+    return c.json(successResponse(data.count));
   } catch (error) {
     c.status(500);
     return c.json(
@@ -113,21 +103,11 @@ app.get("/:id/following/count", async (c) => {
       return c.json(badRequestResponse("Invalid user ID"));
     }
 
-    let nextPageCursor = "";
-    let followingCount = 0;
+    const data = await fetch(
+      `https://friends.roblox.com/v1/users/${id}/followings/count`
+    ).then((res) => res.json());
 
-    do {
-      const cursorParam = nextPageCursor ? `&cursor=${nextPageCursor}` : "";
-      const request = await fetch(
-        `https://friends.roblox.com/v1/users/${id}/followings?sortOrder=Asc&limit=100${cursorParam}`
-      );
-      const data = await request.json();
-
-      followingCount += data.data.length;
-      nextPageCursor = data.nextPageCursor;
-    } while (nextPageCursor);
-
-    return c.json(successResponse(followingCount));
+    return c.json(successResponse(data.count));
   } catch (error) {
     c.status(500);
     return c.json(
@@ -175,21 +155,11 @@ app.get("/:id/followers/count", async (c) => {
       return c.json(badRequestResponse("Invalid user ID"));
     }
 
-    let nextPageCursor = "";
-    let followersCount = 0;
+    const data = await fetch(
+      `https://friends.roblox.com/v1/users/${id}/followers/count`
+    ).then((res) => res.json());
 
-    do {
-      const cursorParam = nextPageCursor ? `&cursor=${nextPageCursor}` : "";
-      const request = await fetch(
-        `https://friends.roblox.com/v1/users/${id}/followers?sortOrder=Asc&limit=100${cursorParam}`
-      );
-      const data = await request.json();
-
-      followersCount += data.data.length;
-      nextPageCursor = data.nextPageCursor;
-    } while (nextPageCursor);
-
-    return c.json(successResponse(followersCount));
+    return c.json(successResponse(data.count));
   } catch (error) {
     c.status(500);
     return c.json(
