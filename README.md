@@ -106,6 +106,18 @@ Get the Discord username of the specified user
 }
 ```
 
+### **GET /v1/health**
+
+Check the health of the API
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": "API is healthy"
+}
+```
+
 ### **Error Responses**
 
 #### Bad Request (400)

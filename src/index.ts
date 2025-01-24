@@ -192,7 +192,7 @@ app.get("/:id/discord", async (c) => {
 });
 
 app.get("/v1/health", (c) => {
-  return c.json(successResponse("OK"));
+  return c.json(successResponse("API is healthy"));
 });
 
 app.get("*", (c) => {
