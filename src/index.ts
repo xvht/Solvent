@@ -191,7 +191,7 @@ app.get("/:id/discord", async (c) => {
   }
 });
 
-app.get("/health", (c) => {
+app.get("/v1/health", (c) => {
   return c.json(successResponse("OK"));
 });
 
