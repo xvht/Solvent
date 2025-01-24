@@ -191,6 +191,10 @@ app.get("/:id/discord", async (c) => {
   }
 });
 
+app.get("/health", (c) => {
+  return c.json(successResponse("OK"));
+});
+
 app.get("*", (c) => {
   c.status(404);
   return c.json(badRequestResponse("Invalid endpoint"));
