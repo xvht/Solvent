@@ -94,6 +94,21 @@ Get total follower count
 }
 ```
 
+### **GET /:id/groups**
+
+Get all groups the specified user is in
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": {
+    "count": 123,
+    "groups": [...]
+  }
+}
+```
+
 ### **GET /:id/discord**
 
 Get the Discord username of the specified user
