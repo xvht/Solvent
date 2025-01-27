@@ -9,7 +9,7 @@ const router = new Hono();
 
 const ROPRO_API_URL = "https://api.ropro.io/getUserInfoTest.php";
 const FRIENDS_API_URL = "https://friends.roblox.com/v1";
-const GROUPS_API_URL = "https://groups.roblox.com/v2";
+const GROUPS_API_URL = "https://groups.roblox.com/v1";
 
 router.get("/", (c) => {
   c.status(400);
@@ -181,12 +181,24 @@ router.get("/:id/groups", async (c) => {
     }
 
     const request = await fetch(
-      `${GROUPS_API_URL}/users/${id}/groups/roles?includeLocked=true&includeNotificationPreferences=true`
+      `${GROUPS_API_URL}/users/${id}/groups/roles?includeLocked=true&includeNotificationPreferences=false`
     );
     const data = await request.json();
-    const count = data.data.length;
 
-    return c.json(successResponse({ count, groups: data.data }));
+    const simplifiedGroups = data.data.map((item: any) => ({
+      groupId: item.group.id,
+      groupName: item.group.name,
+      roleId: item.role.id,
+      roleName: item.role.name,
+      isPrimaryGroup: item.isPrimaryGroup || false,
+    }));
+
+    return c.json(
+      successResponse({
+        count: data.data.length,
+        groups: simplifiedGroups,
+      })
+    );
   } catch (error) {
     c.status(500);
     return c.json(
