@@ -121,18 +121,6 @@ Get the Discord username of the specified user
 }
 ```
 
-### **GET /v1/clothing/:id**
-
-Get a clothing template by ID
-
-```json
-{
-  "error": false,
-  "code": 200,
-  "data": "base64_encoded_image_here"
-}
-```
-
 ### **GET /v1/health**
 
 Check the health of the API
