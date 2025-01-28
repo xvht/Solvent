@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { getClothingTemplate } from "../../core/clothing";
 import {
   badRequestResponse,
   serverErrorResponse,
@@ -42,7 +43,7 @@ router.get("/:id/friends", async (c) => {
   } catch (error) {
     c.status(500);
     return c.json(
-      serverErrorResponse("An error occurred while fetching the data.")
+      serverErrorResponse("An error occurred while fetching the data")
     );
   }
 });
@@ -63,7 +64,7 @@ router.get("/:id/friends/count", async (c) => {
   } catch (error) {
     c.status(500);
     return c.json(
-      serverErrorResponse("An error occurred while fetching the data.")
+      serverErrorResponse("An error occurred while fetching the data")
     );
   }
 });
@@ -94,7 +95,7 @@ router.get("/:id/following", async (c) => {
   } catch (error) {
     c.status(500);
     return c.json(
-      serverErrorResponse("An error occurred while fetching the data.")
+      serverErrorResponse("An error occurred while fetching the data")
     );
   }
 });
@@ -115,7 +116,7 @@ router.get("/:id/following/count", async (c) => {
   } catch (error) {
     c.status(500);
     return c.json(
-      serverErrorResponse("An error occurred while fetching the data.")
+      serverErrorResponse("An error occurred while fetching the data")
     );
   }
 });
@@ -146,7 +147,7 @@ router.get("/:id/followers", async (c) => {
   } catch (error) {
     c.status(500);
     return c.json(
-      serverErrorResponse("An error occurred while fetching the data.")
+      serverErrorResponse("An error occurred while fetching the data")
     );
   }
 });
@@ -167,7 +168,7 @@ router.get("/:id/followers/count", async (c) => {
   } catch (error) {
     c.status(500);
     return c.json(
-      serverErrorResponse("An error occurred while fetching the data.")
+      serverErrorResponse("An error occurred while fetching the data")
     );
   }
 });
@@ -202,7 +203,7 @@ router.get("/:id/groups", async (c) => {
   } catch (error) {
     c.status(500);
     return c.json(
-      serverErrorResponse("An error occurred while fetching the data.")
+      serverErrorResponse("An error occurred while fetching the data")
     );
   }
 });
@@ -223,7 +224,32 @@ router.get("/:id/discord", async (c) => {
   } catch (error) {
     c.status(500);
     return c.json(
-      serverErrorResponse("An error occurred while fetching the data.")
+      serverErrorResponse("An error occurred while fetching the data")
+    );
+  }
+});
+
+router.get("/clothing/:id", async (c) => {
+  try {
+    const id = Number(c.req.param("id"));
+    if (!id || isNaN(id)) {
+      c.status(400);
+      return c.json(badRequestResponse("Invalid clothing ID"));
+    }
+
+    const clothingTemplate = await getClothingTemplate(id.toString());
+    if (!clothingTemplate) {
+      c.status(404);
+      return c.json(
+        badRequestResponse("The clothing template could not be found")
+      );
+    }
+
+    return c.json(successResponse(clothingTemplate));
+  } catch (error) {
+    c.status(500);
+    return c.json(
+      serverErrorResponse("An error occurred while fetching the data")
     );
   }
 });

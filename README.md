@@ -10,7 +10,7 @@ API to fetch Roblox user relationship information (friends, followers, following
 
 ## **Endpoints**
 
-### **GET /**
+### **GET /v1/**
 
 Returns an error if no user ID is provided
 
@@ -22,7 +22,7 @@ Returns an error if no user ID is provided
 }
 ```
 
-### **GET /:id/friends**
+### **GET /v1/:id/friends**
 
 Get all friends of the specified user
 
@@ -34,7 +34,7 @@ Get all friends of the specified user
 }
 ```
 
-### **GET /:id/friends/count**
+### **GET /v1/:id/friends/count**
 
 Get total friend count
 
@@ -46,7 +46,7 @@ Get total friend count
 }
 ```
 
-### **GET /:id/following**
+### **GET /v1/:id/following**
 
 Get all users that the specified user follows
 
@@ -58,7 +58,7 @@ Get all users that the specified user follows
 }
 ```
 
-### **GET /:id/following/count**
+### **GET /v1/:id/following/count**
 
 Get total count of users being followed
 
@@ -70,7 +70,7 @@ Get total count of users being followed
 }
 ```
 
-### **GET /:id/followers**
+### **GET /v1/:id/followers**
 
 Get users following the specified user
 
@@ -82,7 +82,7 @@ Get users following the specified user
 }
 ```
 
-### **GET /:id/followers/count**
+### **GET /v1/:id/followers/count**
 
 Get total follower count
 
@@ -94,7 +94,7 @@ Get total follower count
 }
 ```
 
-### **GET /:id/groups**
+### **GET /v1/:id/groups**
 
 Get all groups the specified user is in
 
@@ -109,7 +109,7 @@ Get all groups the specified user is in
 }
 ```
 
-### **GET /:id/discord**
+### **GET /v1/:id/discord**
 
 Get the Discord username of the specified user
 
@@ -118,6 +118,18 @@ Get the Discord username of the specified user
   "error": false,
   "code": 200,
   "data": "discord_username_here"
+}
+```
+
+### **GET /v1/clothing/:id**
+
+Get a clothing template by ID
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": "base64_encoded_image_here"
 }
 ```
 
