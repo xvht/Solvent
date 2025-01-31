@@ -169,11 +169,19 @@ export function getConfidenceLevel(scores: Scores, metrics: Metrics): string {
   if (positiveFactors.length > negativeFactors.length) {
     confidenceString += "is likely not an alt account. ";
     if (positiveFactors.length > 0) {
-      confidenceString += `The account has ${positiveFactors.join(", ")}.`;
+      confidenceString += `The account has ${positiveFactors
+        .slice(0, -1)
+        .join(", ")}${
+        positiveFactors.length > 1 ? ", and " : ""
+      }${positiveFactors.slice(-1)}.`;
     }
   } else if (negativeFactors.length > 0) {
     confidenceString += "may be an alt account. ";
-    confidenceString += `The account has ${negativeFactors.join(", ")}.`;
+    confidenceString += `The account has ${negativeFactors
+      .slice(0, -1)
+      .join(", ")}${
+      negativeFactors.length > 1 ? ", and " : ""
+    }${negativeFactors.slice(-1)}.`;
   } else {
     confidenceString += "shows mixed indicators for being an alt account.";
   }
