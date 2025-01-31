@@ -174,7 +174,10 @@ Example output:
         "following": 1,
         "groups": 0.6,
         "verification": 0.2,
-        "ropro": 0.8
+        "ropro": 0.8,
+        "accountAge": 0.3,
+        "verifiedBadge": 0.1,
+        "ownedGroups": 0.1
       },
       "metrics": {
         "friendsCount": 9,
@@ -182,7 +185,10 @@ Example output:
         "followingCount": 0,
         "groupsCount": 4,
         "hasRoProDiscord": false,
-        "isEmailVerified": true
+        "isEmailVerified": true,
+        "accountAge": 365,
+        "hasVerifiedBadge": true,
+        "ownedGroupsCount": 1
       },
       "thresholds": {
         "friends": {
@@ -200,15 +206,22 @@ Example output:
         "groups": {
           "low": 3,
           "moderate": 10
+        },
+        "accountAge": {
+          "low": 30,
+          "moderate": 180
         }
       },
       "weights": {
-        "friends": 0.25,
-        "followers": 0.2,
-        "following": 0.15,
-        "groups": 0.15,
+        "friends": 0.15,
+        "followers": 0.1,
+        "following": 0.1,
+        "groups": 0.1,
         "verification": 0.15,
-        "ropro": 0.1
+        "ropro": 0.1,
+        "accountAge": 0.15,
+        "verifiedBadge": 0.1,
+        "ownedGroups": 0.05
       }
     },
     "interpretation": {
