@@ -25,7 +25,7 @@ router.get("/", (c) => {
   return c.json(badRequestResponse("No user ID provided"));
 });
 
-router.get("/resolve-user/:username", async (c) => {
+router.get("/username/:username", async (c) => {
   try {
     const username = c.req.param("username");
     if (!username) {

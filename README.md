@@ -133,6 +133,28 @@ Check if the specified user's roblox email is verified
 }
 ```
 
+### **GET /v1/username/:username**
+
+Resolve a Roblox username to user data
+
+```json
+{
+  "error": false,
+  "code": 200,
+  {
+    "requestedUsername": "roblox",
+    "hasVerifiedBadge": true,
+    "id": 1,
+		"name": "Roblox",
+		"displayName": "Roblox",
+    "description": "...",
+    "created": "2006-02-27T21:06:40.3Z",
+    "isBanned": false,
+    "externalAppDisplayName": null
+  }
+}
+```
+
 ### **GET /v1/:id/alt**
 
 Returns algorithm output to detect if the user is an alt account or not
