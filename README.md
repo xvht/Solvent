@@ -197,22 +197,6 @@ Example output:
 }
 ```
 
-### **GET /v1/:id/clothing**
-
-Get clothing template image for a clothing ID. This fetches the template image from a reverse-engineered Roblox API.
-
-Only `ShirtTemplate` and `PantsTemplate` IDs are supported.
-
-Returns base64 encoded image
-
-```json
-{
-  "error": false,
-  "code": 200,
-  "data": "base64_encoded_image_here"
-}
-```
-
 ### **GET /v1/health**
 
 Check the health of the API
