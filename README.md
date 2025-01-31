@@ -191,7 +191,7 @@ Example output:
     },
     "interpretation": {
       "likelihood": "moderate",
-      "explanation": "Based on social activity, this may be an alt account. The account has very few followers, follows very few users."
+      "explanation": "Based on social activity, this may be an alt account. The account has very few followers, and follows very few users."
     }
   }
 }
