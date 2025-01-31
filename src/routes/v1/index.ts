@@ -223,6 +223,7 @@ router.get("/:id/groups", async (c) => {
       roleId: item.role.id,
       roleName: item.role.name,
       isPrimaryGroup: item.isPrimaryGroup || false,
+      isOwnedGroup: item.group.owner.userId === id,
     }));
 
     return c.json(
@@ -294,6 +295,10 @@ router.get("/:id/alt", async (c) => {
       isUserVerified(id),
     ]);
 
+    const ownedGroupsCount = groupsData.data.filter(
+      (group: any) => group.group.owner.userId === id
+    ).length;
+
     const metrics = {
       friendsCount: friendsCount.count,
       followersCount: followersCount.count,
@@ -307,6 +312,7 @@ router.get("/:id/alt", async (c) => {
           86400000
       ),
       hasVerifiedBadge: baseUserDetails?.hasVerifiedBadge ?? false,
+      ownedGroupsCount,
     };
 
     const scores = calculateScores(metrics);

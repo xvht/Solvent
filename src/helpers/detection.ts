@@ -15,6 +15,7 @@ interface Weights {
   ropro: number;
   accountAge: number;
   verifiedBadge: number;
+  ownedGroups: number;
 }
 
 interface Metrics {
@@ -26,6 +27,7 @@ interface Metrics {
   isEmailVerified: boolean;
   accountAge: number;
   hasVerifiedBadge: boolean;
+  ownedGroupsCount: number;
 }
 
 interface Scores {
@@ -37,6 +39,7 @@ interface Scores {
   ropro: number;
   accountAge: number;
   verifiedBadge: number;
+  ownedGroups: number;
 }
 
 export const THRESHOLDS: Thresholds = {
@@ -56,6 +59,7 @@ export const WEIGHTS: Weights = {
   ropro: 0.1,
   accountAge: 0.15,
   verifiedBadge: 0.1,
+  ownedGroups: 0.05,
 };
 
 export function calculateMetricScore(
@@ -81,6 +85,10 @@ export function calculateVerifiedBadgeScore(hasVerifiedBadge: boolean): number {
   return hasVerifiedBadge ? 0.1 : 1.0; // 0.1 indicates 90% not an alt account
 }
 
+export function calculateOwnedGroupsScore(ownedGroupsCount: number): number {
+  return ownedGroupsCount > 0 ? 0.1 : 1.0; // Owning groups indicates less likely to be an alt
+}
+
 export function calculateScores(metrics: Metrics): Scores {
   return {
     friends: calculateMetricScore(metrics.friendsCount, THRESHOLDS.friends),
@@ -97,6 +105,7 @@ export function calculateScores(metrics: Metrics): Scores {
     ropro: calculateRoProScore(metrics.hasRoProDiscord),
     accountAge: calculateAccountAgeScore(metrics.accountAge),
     verifiedBadge: calculateVerifiedBadgeScore(metrics.hasVerifiedBadge),
+    ownedGroups: calculateOwnedGroupsScore(metrics.ownedGroupsCount),
   };
 }
 
@@ -110,7 +119,8 @@ export function calculateFinalScore(scores: Scores): number {
       scores.verification * WEIGHTS.verification +
       scores.ropro * WEIGHTS.ropro +
       scores.accountAge * WEIGHTS.accountAge +
-      scores.verifiedBadge * WEIGHTS.verifiedBadge
+      scores.verifiedBadge * WEIGHTS.verifiedBadge +
+      scores.ownedGroups * WEIGHTS.ownedGroups
     ).toFixed(3)
   );
 }
@@ -177,6 +187,11 @@ export function getConfidenceLevel(scores: Scores, metrics: Metrics): string {
     positiveFactors.push("has a verified badge");
   }
 
+  // Owned Groups
+  if (metrics.ownedGroupsCount > 0) {
+    positiveFactors.push("owns groups");
+  }
+
   // Build significant factors
   if (scores.friends > 0.7 || scores.followers > 0.7) {
     significantFactors.push("social activity");
@@ -192,6 +207,9 @@ export function getConfidenceLevel(scores: Scores, metrics: Metrics): string {
   }
   if (scores.verifiedBadge < 0.7) {
     significantFactors.push("verified badge");
+  }
+  if (scores.ownedGroups < 0.7) {
+    significantFactors.push("owned groups");
   }
 
   // Build confidence string
