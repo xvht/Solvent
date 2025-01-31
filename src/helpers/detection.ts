@@ -3,6 +3,7 @@ interface Thresholds {
   followers: { low: number; moderate: number };
   following: { low: number; moderate: number };
   groups: { low: number; moderate: number };
+  accountAge: { low: number; moderate: number };
 }
 
 interface Weights {
@@ -12,6 +13,8 @@ interface Weights {
   groups: number;
   verification: number;
   ropro: number;
+  accountAge: number;
+  verifiedBadge: number;
 }
 
 interface Metrics {
@@ -21,6 +24,8 @@ interface Metrics {
   groupsCount: number;
   hasRoProDiscord: boolean;
   isEmailVerified: boolean;
+  accountAge: number;
+  hasVerifiedBadge: boolean;
 }
 
 interface Scores {
@@ -30,6 +35,8 @@ interface Scores {
   groups: number;
   verification: number;
   ropro: number;
+  accountAge: number;
+  verifiedBadge: number;
 }
 
 export const THRESHOLDS: Thresholds = {
@@ -37,15 +44,18 @@ export const THRESHOLDS: Thresholds = {
   followers: { low: 3, moderate: 10 },
   following: { low: 3, moderate: 10 },
   groups: { low: 3, moderate: 10 },
+  accountAge: { low: 30, moderate: 180 }, // in days
 };
 
 export const WEIGHTS: Weights = {
-  friends: 0.25,
-  followers: 0.2,
-  following: 0.15,
-  groups: 0.15,
+  friends: 0.15,
+  followers: 0.1,
+  following: 0.1,
+  groups: 0.1,
   verification: 0.15,
   ropro: 0.1,
+  accountAge: 0.15,
+  verifiedBadge: 0.1,
 };
 
 export function calculateMetricScore(
@@ -63,6 +73,14 @@ export function calculateRoProScore(hasDiscord: boolean): number {
   return hasDiscord ? 0.2 : 0.8; // Less punitive for not having RoPro
 }
 
+export function calculateAccountAgeScore(accountAge: number): number {
+  return calculateMetricScore(accountAge, THRESHOLDS.accountAge);
+}
+
+export function calculateVerifiedBadgeScore(hasVerifiedBadge: boolean): number {
+  return hasVerifiedBadge ? 0.1 : 1.0; // 0.1 indicates 90% not an alt account
+}
+
 export function calculateScores(metrics: Metrics): Scores {
   return {
     friends: calculateMetricScore(metrics.friendsCount, THRESHOLDS.friends),
@@ -77,6 +95,8 @@ export function calculateScores(metrics: Metrics): Scores {
     groups: calculateMetricScore(metrics.groupsCount, THRESHOLDS.groups),
     verification: calculateVerificationScore(metrics.isEmailVerified),
     ropro: calculateRoProScore(metrics.hasRoProDiscord),
+    accountAge: calculateAccountAgeScore(metrics.accountAge),
+    verifiedBadge: calculateVerifiedBadgeScore(metrics.hasVerifiedBadge),
   };
 }
 
@@ -88,7 +108,9 @@ export function calculateFinalScore(scores: Scores): number {
       scores.following * WEIGHTS.following +
       scores.groups * WEIGHTS.groups +
       scores.verification * WEIGHTS.verification +
-      scores.ropro * WEIGHTS.ropro
+      scores.ropro * WEIGHTS.ropro +
+      scores.accountAge * WEIGHTS.accountAge +
+      scores.verifiedBadge * WEIGHTS.verifiedBadge
     ).toFixed(3)
   );
 }
@@ -118,8 +140,8 @@ export function getConfidenceLevel(scores: Scores, metrics: Metrics): string {
   const negativeFactors = [];
 
   // Socials
-  if (scores.friends > 0.8) negativeFactors.push("very low friend count");
-  else if (scores.friends < 0.3) positiveFactors.push("healthy friend count");
+  if (scores.friends > 0.8) negativeFactors.push("a very low friend count");
+  else if (scores.friends < 0.3) positiveFactors.push("a healthy friend count");
 
   if (scores.followers > 0.8) negativeFactors.push("very few followers");
   else if (scores.followers < 0.3)
@@ -129,20 +151,30 @@ export function getConfidenceLevel(scores: Scores, metrics: Metrics): string {
   else if (scores.following < 0.3)
     positiveFactors.push("follows a normal amount of users");
 
-  if (scores.groups > 0.8) negativeFactors.push("minimal group participation");
+  if (scores.groups > 0.8)
+    negativeFactors.push("has minimal group participation");
   else if (scores.groups < 0.3)
-    positiveFactors.push("active in multiple groups");
+    positiveFactors.push("is active in multiple groups");
 
   // Verification
   if (metrics.isEmailVerified) {
-    positiveFactors.push("verified email");
+    positiveFactors.push("has a verified email");
   } else {
-    negativeFactors.push("unverified email");
+    negativeFactors.push("has an unverified email");
   }
 
   // RoPro
   if (metrics.hasRoProDiscord) {
     positiveFactors.push("has RoPro Discord integration");
+  }
+
+  // Account Age
+  if (scores.accountAge > 0.8) negativeFactors.push("is a new account");
+  else if (scores.accountAge < 0.3) positiveFactors.push("is an old account");
+
+  // Verified Badge
+  if (metrics.hasVerifiedBadge) {
+    positiveFactors.push("has a verified badge");
   }
 
   // Build significant factors
@@ -154,6 +186,12 @@ export function getConfidenceLevel(scores: Scores, metrics: Metrics): string {
   }
   if (scores.verification > 0.7) {
     significantFactors.push("verification status");
+  }
+  if (scores.accountAge > 0.7) {
+    significantFactors.push("account age");
+  }
+  if (scores.verifiedBadge < 0.7) {
+    significantFactors.push("verified badge");
   }
 
   // Build confidence string

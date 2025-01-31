@@ -7,6 +7,7 @@ import {
   THRESHOLDS,
   WEIGHTS,
 } from "../../helpers/detection";
+import { getUserByUsername, getUserDetails } from "../../helpers/users";
 import {
   badRequestResponse,
   serverErrorResponse,
@@ -22,6 +23,29 @@ const GROUPS_API_URL = "https://groups.roblox.com/v1";
 router.get("/", (c) => {
   c.status(400);
   return c.json(badRequestResponse("No user ID provided"));
+});
+
+router.get("/resolve-user/:username", async (c) => {
+  try {
+    const username = c.req.param("username");
+    if (!username) {
+      c.status(400);
+      return c.json(badRequestResponse("Invalid username"));
+    }
+
+    const data = await getUserByUsername(username);
+    if (!data) {
+      return c.json(badRequestResponse("User not found"));
+    }
+
+    const userDetails = await getUserDetails(data.id);
+    return c.json(successResponse({ ...data, ...userDetails }));
+  } catch (error) {
+    c.status(500);
+    return c.json(
+      serverErrorResponse("An error occurred while fetching the data")
+    );
+  }
 });
 
 router.get("/:id/friends", async (c) => {
@@ -245,6 +269,7 @@ router.get("/:id/alt", async (c) => {
     }
 
     const [
+      baseUserDetails,
       friendsCount,
       followersCount,
       followingCount,
@@ -252,6 +277,7 @@ router.get("/:id/alt", async (c) => {
       roproData,
       isEmailVerified,
     ] = await Promise.all([
+      getUserDetails(id),
       fetch(`${FRIENDS_API_URL}/users/${id}/friends/count`).then((res) =>
         res.json()
       ),
@@ -275,6 +301,12 @@ router.get("/:id/alt", async (c) => {
       groupsCount: groupsData.data.length,
       hasRoProDiscord: Boolean(roproData.discord),
       isEmailVerified,
+      accountAge: Math.floor(
+        (Date.now() -
+          new Date(baseUserDetails?.created ?? new Date()).getTime()) /
+          86400000
+      ),
+      hasVerifiedBadge: baseUserDetails?.hasVerifiedBadge ?? false,
     };
 
     const scores = calculateScores(metrics);
