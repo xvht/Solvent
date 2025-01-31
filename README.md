@@ -121,7 +121,7 @@ Get the Discord username of the specified user
 }
 ```
 
-### **GET /v1/:id/email-verified**
+### **GET /v1/:id/is-verified**
 
 Check if the specified user's roblox email is verified
 

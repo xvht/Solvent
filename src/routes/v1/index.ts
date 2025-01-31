@@ -305,7 +305,7 @@ router.get("/:id/alt", async (c) => {
   }
 });
 
-router.get("/:id/email-verified", async (c) => {
+router.get("/:id/is-verified", async (c) => {
   try {
     const id = Number(c.req.param("id"));
     if (!id || isNaN(id)) {
