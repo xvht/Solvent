@@ -244,7 +244,6 @@ router.get("/:id/alt", async (c) => {
       return c.json(badRequestResponse("Invalid user ID"));
     }
 
-    // Fetch all required data in parallel
     const [
       friendsCount,
       followersCount,
