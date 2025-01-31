@@ -1,5 +1,13 @@
 import { Hono } from "hono";
 import {
+  calculateFinalScore,
+  calculateScores,
+  getConfidenceLevel,
+  isUserVerified,
+  THRESHOLDS,
+  WEIGHTS,
+} from "../../helpers/detection";
+import {
   badRequestResponse,
   serverErrorResponse,
   successResponse,
@@ -220,6 +228,94 @@ router.get("/:id/discord", async (c) => {
     );
 
     return c.json(successResponse(data.discord));
+  } catch (error) {
+    c.status(500);
+    return c.json(
+      serverErrorResponse("An error occurred while fetching the data")
+    );
+  }
+});
+
+router.get("/:id/alt", async (c) => {
+  try {
+    const id = Number(c.req.param("id"));
+    if (!id || isNaN(id)) {
+      c.status(400);
+      return c.json(badRequestResponse("Invalid user ID"));
+    }
+
+    // Fetch all required data in parallel
+    const [
+      friendsCount,
+      followersCount,
+      followingCount,
+      groupsData,
+      roproData,
+      isEmailVerified,
+    ] = await Promise.all([
+      fetch(`${FRIENDS_API_URL}/users/${id}/friends/count`).then((res) =>
+        res.json()
+      ),
+      fetch(`${FRIENDS_API_URL}/users/${id}/followers/count`).then((res) =>
+        res.json()
+      ),
+      fetch(`${FRIENDS_API_URL}/users/${id}/followings/count`).then((res) =>
+        res.json()
+      ),
+      fetch(
+        `${GROUPS_API_URL}/users/${id}/groups/roles?includeLocked=true&includeNotificationPreferences=false`
+      ).then((res) => res.json()),
+      fetch(`${ROPRO_API_URL}?userid=${id}`).then((res) => res.json()),
+      isUserVerified(id),
+    ]);
+
+    const metrics = {
+      friendsCount: friendsCount.count,
+      followersCount: followersCount.count,
+      followingCount: followingCount.count,
+      groupsCount: groupsData.data.length,
+      hasRoProDiscord: Boolean(roproData.discord),
+      isEmailVerified,
+    };
+
+    const scores = calculateScores(metrics);
+    const finalScore = calculateFinalScore(scores);
+    const confidenceExplanation = getConfidenceLevel(scores, metrics);
+
+    const response = {
+      score: finalScore,
+      details: {
+        scores,
+        metrics,
+        thresholds: THRESHOLDS,
+        weights: WEIGHTS,
+      },
+      interpretation: {
+        likelihood:
+          finalScore < 0.3 ? "low" : finalScore < 0.7 ? "moderate" : "high",
+        explanation: confidenceExplanation,
+      },
+    };
+
+    return c.json(successResponse(response));
+  } catch (error) {
+    c.status(500);
+    return c.json(
+      serverErrorResponse("An error occurred while fetching the data")
+    );
+  }
+});
+
+router.get("/:id/email-verified", async (c) => {
+  try {
+    const id = Number(c.req.param("id"));
+    if (!id || isNaN(id)) {
+      c.status(400);
+      return c.json(badRequestResponse("Invalid user ID"));
+    }
+
+    const isVerified = await isUserVerified(id);
+    return c.json(successResponse(isVerified));
   } catch (error) {
     c.status(500);
     return c.json(

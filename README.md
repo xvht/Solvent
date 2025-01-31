@@ -121,6 +121,98 @@ Get the Discord username of the specified user
 }
 ```
 
+### **GET /v1/:id/email-verified**
+
+Check if the specified user's roblox email is verified
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": true
+}
+```
+
+### **GET /v1/:id/alt**
+
+Returns algorithm output to detect if the user is an alt account or not
+
+Example output:
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": {
+    "score": 0.65,
+    "details": {
+      "scores": {
+        "friends": 0.4,
+        "followers": 1,
+        "following": 1,
+        "groups": 0.6,
+        "verification": 0.2,
+        "ropro": 0.8
+      },
+      "metrics": {
+        "friendsCount": 9,
+        "followersCount": 0,
+        "followingCount": 0,
+        "groupsCount": 4,
+        "hasRoProDiscord": false,
+        "isEmailVerified": true
+      },
+      "thresholds": {
+        "friends": {
+          "low": 5,
+          "moderate": 15
+        },
+        "followers": {
+          "low": 3,
+          "moderate": 10
+        },
+        "following": {
+          "low": 3,
+          "moderate": 10
+        },
+        "groups": {
+          "low": 3,
+          "moderate": 10
+        }
+      },
+      "weights": {
+        "friends": 0.25,
+        "followers": 0.2,
+        "following": 0.15,
+        "groups": 0.15,
+        "verification": 0.15,
+        "ropro": 0.1
+      }
+    },
+    "interpretation": {
+      "likelihood": "moderate",
+      "explanation": "Based on social activity, this may be an alt account. The account has very few followers, follows very few users."
+    }
+  }
+}
+```
+
+### **GET /v1/:id/clothing**
+
+Get clothing template image for a clothing ID. This fetches the template image from a reverse-engineered Roblox API.
+
+Only `ShirtTemplate` and `PantsTemplate` IDs are supported.
+
+Returns base64 encoded image
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": "base64_encoded_image_here"
+}
+```
+
 ### **GET /v1/health**
 
 Check the health of the API
