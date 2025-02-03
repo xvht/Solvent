@@ -2,7 +2,7 @@
 
 API to fetch Roblox user relationship information (friends, followers, following)
 
-> [!NOTE]
+> [!IMPORTANT]
 >
 > - All endpoints that fetch lists of users handle pagination automatically (100 items per page)
 > - The API internally concatenates all pages to return complete results
