@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: FollowingAPI
+    container_name: SolventAPI
     ports:
       - "45211:3001"
     restart: unless-stopped
