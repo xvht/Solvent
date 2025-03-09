@@ -5,5 +5,5 @@ services:
       dockerfile: Dockerfile
     container_name: SolventAPI
     ports:
-      - "45211:3001"
+      - "45211:3000"
     restart: unless-stopped
