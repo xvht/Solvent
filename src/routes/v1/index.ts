@@ -7,6 +7,7 @@ import {
   THRESHOLDS,
   WEIGHTS,
 } from "../../helpers/detection";
+import { generateRandomBirthday } from "../../helpers/roblox";
 import { getUserByUsername, getUserDetails } from "../../helpers/users";
 import {
   badRequestResponse,
@@ -40,6 +41,38 @@ router.get("/username/:username", async (c) => {
 
     const userDetails = await getUserDetails(data.id);
     return c.json(successResponse({ ...data, ...userDetails }));
+  } catch (error) {
+    c.status(500);
+    return c.json(
+      serverErrorResponse("An error occurred while fetching the data")
+    );
+  }
+});
+
+router.get("/username/:username/validate", async (c) => {
+  try {
+    const username = c.req.param("username");
+    if (!username) {
+      c.status(400);
+      return c.json(badRequestResponse("Invalid username"));
+    }
+
+    const { code } = await fetch(
+      "https://auth.roblox.com/v1/usernames/validate",
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          context: "Signup",
+          birthday: generateRandomBirthday(),
+        }),
+      }
+    ).then((res) => res.json());
+
+    return c.json(successResponse(code === 0)); // 0 = valid, 1 = taken, 2 = filtered
   } catch (error) {
     c.status(500);
     return c.json(
