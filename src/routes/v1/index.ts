@@ -7,7 +7,7 @@ import {
   THRESHOLDS,
   WEIGHTS,
 } from "../../helpers/detection";
-import { generateRandomBirthday } from "../../helpers/roblox";
+import { fetchCrsfToken, generateRandomBirthday } from "../../helpers/roblox";
 import { getUserByUsername, getUserDetails } from "../../helpers/users";
 import {
   badRequestResponse,
@@ -57,13 +57,39 @@ router.get("/username/:username/validate", async (c) => {
       return c.json(badRequestResponse("Invalid username"));
     }
 
-    const { code } = await fetch(
+    const crsfToken = (await fetchCrsfToken()) || "";
+    if (!crsfToken) {
+      c.status(500);
+      return c.json(
+        serverErrorResponse("An error occurred while fetching the CSRF token")
+      );
+    }
+
+    const response = await fetch(
       "https://auth.roblox.com/v1/usernames/validate",
       {
         method: "POST",
         headers: {
-          "content-type": "application/json",
+          "Content-Type": "application/json;charset=utf-8",
+          "x-csrf-token": crsfToken,
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0",
+          Accept: "application/json, text/plain, */*",
+          "Accept-Language": "en-US,en;q=0.5",
+          "Accept-Encoding": "gzip, deflate, br, zstd",
+          Origin: "https://www.roblox.com",
+          DNT: "1",
+          "Sec-GPC": "1",
+          Connection: "keep-alive",
+          Referer: "https://www.roblox.com/",
+          "Sec-Fetch-Dest": "empty",
+          "Sec-Fetch-Mode": "cors",
+          "Sec-Fetch-Site": "same-site",
+          Pragma: "no-cache",
+          "Cache-Control": "no-cache",
+          TE: "trailers",
         },
+        cache: "no-cache",
         body: JSON.stringify({
           username,
           context: "Signup",
@@ -72,7 +98,7 @@ router.get("/username/:username/validate", async (c) => {
       }
     ).then((res) => res.json());
 
-    return c.json(successResponse(code === 0)); // 0 = valid, 1 = taken, 2 = filtered
+    return c.json(successResponse(response)); // 0 = valid, 1 = taken, 2 = filtered
   } catch (error) {
     c.status(500);
     return c.json(
