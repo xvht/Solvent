@@ -420,6 +420,27 @@ router.get("/:id/is-verified", async (c) => {
   }
 });
 
+router.get("/servers/:gameId", async (c) => {
+  try {
+    const gameId = Number(c.req.param("gameId"));
+    if (!gameId || isNaN(gameId)) {
+      c.status(400);
+      return c.json(badRequestResponse("Invalid game ID"));
+    }
+
+    const response = await fetch(
+      `https://games.roblox.com/v1/games/${gameId}/servers/Public?sortOrder=Asc&limit=10&excludeFullGames=true`
+    ).then((res) => res.json());
+
+    return c.json(successResponse(response.data));
+  } catch (error) {
+    c.status(500);
+    return c.json(
+      serverErrorResponse("An error occurred while fetching the data")
+    );
+  }
+});
+
 router.get("/health", (c) => {
   return c.json(successResponse("API is healthy"));
 });
