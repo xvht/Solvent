@@ -428,9 +428,24 @@ router.get("/servers/:gameId", async (c) => {
       return c.json(badRequestResponse("Invalid game ID"));
     }
 
+    const query = new URLSearchParams({
+      sortOrder: "Desc",
+      limit: "10",
+      excludeFullGames: "true",
+    });
+
     const response = await fetch(
-      `https://games.roblox.com/v1/games/${gameId}/servers/Public?sortOrder=Asc&limit=10&excludeFullGames=true`
+      `https://games.roblox.com/v1/games/${gameId}/servers/Public?${query}`
     ).then((res) => res.json());
+
+    if (!response.data) {
+      c.status(429);
+      return c.json({
+        error: true,
+        code: 429,
+        data: response.errors,
+      });
+    }
 
     return c.json(successResponse(response.data));
   } catch (error) {
