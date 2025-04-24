@@ -391,7 +391,7 @@ Retrieves a list of public servers for a given game's Place ID.
 
 -   `sortOrder` (string, optional): Sort order for servers. `Asc` or `Desc`. Defaults to `Desc`.
 -   `limit` (number, optional): Max number of servers to return. Allowed values: `10`, `25`, `50`, `100`. Defaults to `10`.
--   `excludeFullGames` (boolean, optional): Whether to exclude full servers. `true` or `false`. Defaults to `true`. *(Note: The code currently doesn't pass this parameter to the Roblox API, so it effectively defaults to Roblox's default behavior)*.
+-   `excludeFullGames` (boolean, optional): Whether to exclude full servers. `true` or `false`. Defaults to `true`.
 
 **Success Response (200 OK):**
 ```json
