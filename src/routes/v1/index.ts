@@ -428,10 +428,39 @@ router.get("/servers/:gameId", async (c) => {
       return c.json(badRequestResponse("Invalid game ID"));
     }
 
+    const sortOrder = c.req.query("sortOrder") || "Desc";
+    if (sortOrder !== "Asc" && sortOrder !== "Desc") {
+      c.status(400);
+      return c.json(badRequestResponse("Invalid sortOrder value"));
+    }
+
+    const limitParam = c.req.query("limit");
+    let limit = 10;
+    if (limitParam !== undefined) {
+      limit = Number(limitParam);
+      if (![10, 25, 50, 100].includes(limit)) {
+        c.status(400);
+        return c.json(badRequestResponse("Invalid limit value"));
+      }
+    }
+
+    const excludeFullGamesParam = c.req.query("excludeFullGames");
+    let excludeFullGames = "true";
+    if (excludeFullGamesParam !== undefined) {
+      if (
+        excludeFullGamesParam.toLowerCase() !== "true" &&
+        excludeFullGamesParam.toLowerCase() !== "false"
+      ) {
+        c.status(400);
+        return c.json(badRequestResponse("Invalid excludeFullGames value"));
+      }
+      excludeFullGames = excludeFullGamesParam.toLowerCase();
+    }
+
     const query = new URLSearchParams({
-      sortOrder: "Desc",
-      limit: "10",
-      excludeFullGames: "true",
+      sortOrder,
+      limit: limit.toString(),
+      excludeFullGames,
     });
 
     const response = await fetch(

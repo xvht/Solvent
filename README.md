@@ -1,216 +1,341 @@
-# **Solvent**
+# **Solvent API Documentation**
 
-API to fetch Roblox user relationship information (friends, followers, following)
+API to fetch Roblox user relationship information, group details, verification status, game server data, and perform username lookups and alt account analysis.
 
 > [!IMPORTANT]
 >
-> - All endpoints that fetch lists of users handle pagination automatically (100 items per page)
-> - The API internally concatenates all pages to return complete results
-> - User ID must be a valid number
+> - All endpoints returning lists of users (friends, followers, following) automatically handle pagination internally and return the complete results.
+> - User IDs (`:id`) must be valid positive integers.
+> - Usernames (`:username`) are case-insensitive but must correspond to an existing Roblox account.
+> - Game IDs (`:gameId`) must be valid Roblox Place IDs.
+
+## **Base URL**
+
+All API endpoints are prefixed with `/v1`.
+
+Example: `https://your-api-domain.com/v1/health`
+
+## **Common Response Format**
+
+All responses follow a consistent JSON structure:
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": {}
+}
+```
+
+- `error`: Boolean indicating whether the request was successful (`false`) or failed (`true`).
+- `code`: HTTP status code.
+- `data`: The response data.
+
+---
 
 ## **Endpoints**
 
-### **GET /v1/**
+### **GET `/v1/health`**
 
-Returns an error if no user ID is provided
+Check the health status of the API.
 
-```json
-{
-  "error": true,
-  "code": 400,
-  "data": "No user ID provided"
-}
-```
-
-### **GET /v1/:id/friends**
-
-Get all friends of the specified user
+#### Response
 
 ```json
 {
   "error": false,
   "code": 200,
-  "data": [...]
+  "data": "API is healthy"
 }
 ```
 
-### **GET /v1/:id/friends/count**
+---
 
-Get total friend count
+### **GET `/v1/username/:username`**
 
-```json
-{
-  "error": false,
-  "code": 200,
-  "data": 123
-}
-```
+Fetch user details by username.
 
-### **GET /v1/:id/following**
+#### Parameters
 
-Get all users that the specified user follows
+- `:username` (string): The Roblox username.
 
-```json
-{
-  "error": false,
-  "code": 200,
-  "data": [...]
-}
-```
-
-### **GET /v1/:id/following/count**
-
-Get total count of users being followed
-
-```json
-{
-  "error": false,
-  "code": 200,
-  "data": 123
-}
-```
-
-### **GET /v1/:id/followers**
-
-Get users following the specified user
-
-```json
-{
-  "error": false,
-  "code": 200,
-  "data": [...]
-}
-```
-
-### **GET /v1/:id/followers/count**
-
-Get total follower count
-
-```json
-{
-  "error": false,
-  "code": 200,
-  "data": 123
-}
-```
-
-### **GET /v1/:id/groups**
-
-Get all groups the specified user is in
+#### Response
 
 ```json
 {
   "error": false,
   "code": 200,
   "data": {
-    "count": 123,
-    "groups": [...]
+    "id": 123456,
+    "name": "username",
+    "displayName": "Display Name",
+    "description": "User description",
+    "created": "2020-01-01T00:00:00.000Z",
+    "hasVerifiedBadge": true
   }
 }
 ```
 
-### **GET /v1/:id/discord**
+---
 
-Get the Discord username of the specified user
+### **GET `/v1/username/:username/validate`**
 
-```json
-{
-  "error": false,
-  "code": 200,
-  "data": "discord_username_here"
-}
-```
+Validate the availability of a username.
 
-### **GET /v1/:id/is-verified**
+#### Parameters
 
-Check if the specified user's roblox email is verified
+- `:username` (string): The Roblox username to validate.
 
-```json
-{
-  "error": false,
-  "code": 200,
-  "data": true
-}
-```
-
-### **GET /v1/username/:username**
-
-Resolve a Roblox username to user data
-
-```json
-{
-  "error": false,
-  "code": 200,
-  {
-    "requestedUsername": "roblox",
-    "hasVerifiedBadge": true,
-    "id": 1,
-		"name": "Roblox",
-		"displayName": "Roblox",
-    "description": "...",
-    "created": "2006-02-27T21:06:40.3Z",
-    "isBanned": false,
-    "externalAppDisplayName": null
-  }
-}
-```
-
-### **GET /v1/:id/alt**
-
-Returns algorithm output to detect if the user is an alt account or not
-
-Example output:
+#### Response
 
 ```json
 {
   "error": false,
   "code": 200,
   "data": {
-    "score": 0.65,
+    "code": 0,
+    "message": "Valid username"
+  }
+}
+```
+
+---
+
+### **GET `/v1/:id/friends`**
+
+Fetch the list of friends for a user.
+
+#### Parameters
+
+- `:id` (integer): The Roblox user ID.
+
+#### Response
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": [
+    {
+      "id": 123456,
+      "name": "Friend1",
+      "displayName": "Friend Display Name"
+    }
+  ]
+}
+```
+
+---
+
+### **GET `/v1/:id/friends/count`**
+
+Fetch the count of friends for a user.
+
+#### Parameters
+
+- `:id` (integer): The Roblox user ID.
+
+#### Response
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": 10
+}
+```
+
+---
+
+### **GET `/v1/:id/following`**
+
+Fetch the list of users the specified user is following.
+
+#### Parameters
+
+- `:id` (integer): The Roblox user ID.
+
+#### Response
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": [
+    {
+      "id": 123456,
+      "name": "Following1",
+      "displayName": "Following Display Name"
+    }
+  ]
+}
+```
+
+---
+
+### **GET `/v1/:id/following/count`**
+
+Fetch the count of users the specified user is following.
+
+#### Parameters
+
+- `:id` (integer): The Roblox user ID.
+
+#### Response
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": 5
+}
+```
+
+---
+
+### **GET `/v1/:id/followers`**
+
+Fetch the list of followers for a user.
+
+#### Parameters
+
+- `:id` (integer): The Roblox user ID.
+
+#### Response
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": [
+    {
+      "id": 123456,
+      "name": "Follower1",
+      "displayName": "Follower Display Name"
+    }
+  ]
+}
+```
+
+---
+
+### **GET `/v1/:id/followers/count`**
+
+Fetch the count of followers for a user.
+
+#### Parameters
+
+- `:id` (integer): The Roblox user ID.
+
+#### Response
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": 15
+}
+```
+
+---
+
+### **GET `/v1/:id/groups`**
+
+Fetch the list of groups the user is part of.
+
+#### Parameters
+
+- `:id` (integer): The Roblox user ID.
+
+#### Response
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": {
+    "count": 3,
+    "groups": [
+      {
+        "groupId": 123,
+        "groupName": "Group Name",
+        "roleId": 456,
+        "roleName": "Role Name",
+        "isPrimaryGroup": false,
+        "isOwnedGroup": true
+      }
+    ]
+  }
+}
+```
+
+---
+
+### **GET `/v1/:id/discord`**
+
+Fetch the Discord account linked to the user's RoPro profile.
+
+#### Parameters
+
+- `:id` (integer): The Roblox user ID.
+
+#### Response
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": "Discord#1234"
+}
+```
+
+---
+
+### **GET `/v1/:id/alt`**
+
+Analyze whether the user is likely an alt account.
+
+#### Parameters
+
+- `:id` (integer): The Roblox user ID.
+
+#### Response
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "data": {
+    "score": 0.75,
     "details": {
       "scores": {
-        "friends": 0.4,
-        "followers": 1,
-        "following": 1,
-        "groups": 0.6,
-        "verification": 0.2,
-        "ropro": 0.8,
+        "friends": 0.2,
+        "followers": 0.3,
+        "following": 0.4,
+        "groups": 0.5,
+        "verification": 0.1,
+        "ropro": 0.2,
         "accountAge": 0.3,
         "verifiedBadge": 0.1,
-        "ownedGroups": 0.1
+        "ownedGroups": 0.2
       },
       "metrics": {
-        "friendsCount": 9,
-        "followersCount": 0,
-        "followingCount": 0,
-        "groupsCount": 4,
-        "hasRoProDiscord": false,
+        "friendsCount": 10,
+        "followersCount": 5,
+        "followingCount": 3,
+        "groupsCount": 2,
+        "hasRoProDiscord": true,
         "isEmailVerified": true,
         "accountAge": 365,
         "hasVerifiedBadge": true,
         "ownedGroupsCount": 1
       },
       "thresholds": {
-        "friends": {
-          "low": 5,
-          "moderate": 15
-        },
-        "followers": {
-          "low": 3,
-          "moderate": 10
-        },
-        "following": {
-          "low": 3,
-          "moderate": 10
-        },
-        "groups": {
-          "low": 3,
-          "moderate": 10
-        },
-        "accountAge": {
-          "low": 30,
-          "moderate": 180
-        }
+        "friends": { "low": 5, "moderate": 15 },
+        "followers": { "low": 3, "moderate": 10 },
+        "following": { "low": 3, "moderate": 10 },
+        "groups": { "low": 3, "moderate": 10 },
+        "accountAge": { "low": 30, "moderate": 180 }
       },
       "weights": {
         "friends": 0.15,
@@ -225,43 +350,69 @@ Example output:
       }
     },
     "interpretation": {
-      "likelihood": "moderate",
-      "explanation": "Based on social activity, this may be an alt account. The account has very few followers, and follows very few users."
+      "likelihood": "high",
+      "explanation": "Based on account age, verification status, and group participation, this is likely not an alt account."
     }
   }
 }
 ```
 
-### **GET /v1/health**
+---
 
-Check the health of the API
+### **GET `/v1/:id/is-verified`**
+
+Check if the user has a verified email.
+
+#### Parameters
+
+- `:id` (integer): The Roblox user ID.
+
+#### Response
 
 ```json
 {
   "error": false,
   "code": 200,
-  "data": "API is healthy"
+  "data": true
 }
 ```
 
-### **Error Responses**
+---
 
-#### Bad Request (400)
+Retrieves a list of public servers for a given game's Place ID.
 
+`GET /v1/servers/:gameId`
+
+**Path Parameters:**
+
+- `:gameId` (integer): The Roblox Place ID.
+
+**Query Parameters:**
+
+-   `sortOrder` (string, optional): Sort order for servers. `Asc` or `Desc`. Defaults to `Desc`.
+-   `limit` (number, optional): Max number of servers to return. Allowed values: `10`, `25`, `50`, `100`. Defaults to `10`.
+-   `excludeFullGames` (boolean, optional): Whether to exclude full servers. `true` or `false`. Defaults to `true`. *(Note: The code currently doesn't pass this parameter to the Roblox API, so it effectively defaults to Roblox's default behavior)*.
+
+**Success Response (200 OK):**
 ```json
-{
-  "error": true,
-  "code": 400,
-  "data": "Invalid user ID"
-}
-```
-
-#### Server Error (500)
-
-```json
-{
-  "error": true,
-  "code": 500,
-  "data": "An error occurred while fetching the data"
-}
+[
+  {
+    "id": "123456789",
+    "maxPlayers": 10,
+    "playing": 8,
+    "fps": 60,
+    "ping": 100,
+    "location": "US",
+    "vipServerId": null
+  },
+  {
+    "id": "987654321",
+    "maxPlayers": 15,
+    "playing": 15,
+    "fps": 45,
+    "ping": 150,
+    "location": "EU",
+    "vipServerId": null
+  }
+]
 ```
