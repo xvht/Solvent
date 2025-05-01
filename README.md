@@ -381,9 +381,9 @@ Check if the user has a verified email.
 
 Retrieves a list of public servers for a given game's Place ID.
 
-`GET /v1/servers/:gameId`
+### **GET `/v1/servers/:gameId`**
 
-**Path Parameters:**
+**Parameters:**
 
 - `:gameId` (integer): The Roblox Place ID.
 
@@ -393,7 +393,7 @@ Retrieves a list of public servers for a given game's Place ID.
 -   `limit` (number, optional): Max number of servers to return. Allowed values: `10`, `25`, `50`, `100`. Defaults to `10`.
 -   `excludeFullGames` (boolean, optional): Whether to exclude full servers. `true` or `false`. Defaults to `true`.
 
-**Success Response (200 OK):**
+**Response**
 ```json
 [
   {
